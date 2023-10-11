@@ -1,0 +1,75 @@
+version: "3.9"  # optional since v1.27.0
+services:
+
+  dokkie-nginx:
+    container_name: dokkie-nginx
+    build: ./nginx
+    hostname: dokkie_nginx
+    ports:
+      - "8770:8660"
+    depends_on:
+      - dokkie-php-fpm
+    volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d
+      - ../dokkie:/opt/webapp
+
+    working_dir: /opt/webapp
+    networks:
+      - dokkie-docker-local
+
+  dokkie-php-fpm:
+    container_name: dokkie-php-fpm
+    build: ./php-fpm
+    hostname: dokkie_php_fpm
+    depends_on:
+      - dokkie-mysql
+      - dokkie-redis
+    volumes:
+      - ./php-fpm/etc/php.ini:/usr/local/etc/php-fpm/php.ini
+      - ./php-fpm/etc/www.conf:/usr/local/etc/php-fpm.d/zz-www.conf
+      - ../dokkie:/opt/webapp
+    working_dir: /opt/webapp
+    networks:
+      - dokkie-docker-local
+
+  dokkie-php-unit:
+    container_name: dokkie-php-unit
+    build: ./php-unit
+    hostname: dokkie_php_unit
+    depends_on:
+      - dokkie-mysql
+      - dokkie-redis
+    volumes:
+      - ./php-unit/etc/php.ini:/usr/local/etc/php-unit/php.ini
+      - ./php-unit/etc/www.conf:/usr/local/etc/php-unit.d/zz-www.conf
+      - ./php-unit/conf.d/xdebug.ini:/usr/local/etc/php-unit/conf.d/docker-php-ext-xdebug.ini
+      - ../dokkie:/opt/webapp
+    working_dir: /opt/webapp
+    networks:
+      - dokkie-docker-local
+
+  dokkie-mysql:
+    container_name: dokkie-mysql
+    image: mariadb:10.1
+    hostname: dokkie_mysql
+    ports:
+      - "8716:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: keepitsimplestupid
+    volumes:
+      - ./mysql/initialize.sql:/docker-entrypoint-initdb.d/initialize.sql
+    networks:
+      - dokkie-docker-local
+
+  dokkie-redis:
+    container_name: dokkie-redis
+    hostname: dokkie-redis
+    image: redis
+
+volumes:
+  logvolume01: {}
+
+networks:
+  dokkie-docker-local:
+
+
