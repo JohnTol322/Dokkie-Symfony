@@ -1,0 +1,42 @@
+{% block header %}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">DOKKIE</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ path("home_page") }}">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Events
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ path("list_events") }}">My Events</a></li>
+                            <li><a class="dropdown-item" href="{{ path("create_event") }}">Create new Event</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path("faq_page") }}">
+                            FAQ
+                        </a>
+                    </li>
+                </ul>
+                <p class="nav-item">
+                    {% if is_granted("IS_AUTHENTICATED_FULLY") %}
+                        <a class="nav-link" href="{{ path("app_logout") }}">
+                            Logout
+                        </a>
+                    {% else %}
+                        <a class="nav-link" href="{{ path("app_login") }}">
+                            Login
+                        </a>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
