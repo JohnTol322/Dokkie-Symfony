@@ -1,0 +1,18 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <form method="post">
+
+        {% include "layout/flash_message.html.twig" %}
+
+        <h1 class="h3 mb-3 font-weight-normal">Please sign up</h1>
+        <label for="inputEmail">Email</label>
+        <input type="email" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+        <label for="inputPassword">Password</label>
+        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+
+        <button class="btn btn-lg btn-primary" type="submit">
+            Sign up
+        </button>
+    </form>
+{% endblock %}
