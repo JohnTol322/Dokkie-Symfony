@@ -1,0 +1,30 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    {% include "layout/flash_message.html.twig" %}
+
+    <div class="card p-3 m-3">
+        <div class="d-flex d-flex justify-content-between">
+            <h1>{{ event.description }}</h1>
+            <a href="{{ path("edit_event", {id: event.id}) }}">
+                <button class="btn btn-primary">Edit event</button>
+            </a>
+        </div>
+        <small>Created by: {{ event.user.email }}</small> <br />
+        <small>Created on: {{ event.dateCreated|date }}</small> <br />
+    </div>
+    <div class="card p-3 m-3">
+        {% include "participant/list_participants.html.twig" %}
+    </div>
+    <div class="card p-3 m-3">
+        {% include "payment/list_payments.html.twig" %}
+    </div>
+    <div class="card p-3 m-3">
+        <h3 style="color: #af0101;">Delete event</h3>
+        <small style="color: #af0101;">Are you sure? Deleting an event will be permanent!</small>
+        <a href="{{ path("delete_event", {id: event.id}) }}">
+            <button class="btn btn-outline-danger">Delete</button>
+        </a>
+    </div>
+{% endblock %}

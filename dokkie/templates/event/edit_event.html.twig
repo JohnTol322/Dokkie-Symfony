@@ -1,0 +1,19 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <form method="post">
+
+        {% include "layout/flash_message.html.twig" %}
+
+        <h1 class="h3 mb-3 font-weight-normal">Edit Event</h1>
+
+        <input type="hidden" name="id" value="{{ event.id }}" />
+
+        <label for="inputDescription">Description</label>
+        <input type="text" name="description" id="inputDescription" class="form-control" value="{{ event.description }}" required autofocus>
+
+        <button class="btn btn-lg btn-primary" type="submit">
+            Edit Event
+        </button>
+    </form>
+{% endblock %}
