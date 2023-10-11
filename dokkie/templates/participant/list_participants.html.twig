@@ -1,0 +1,23 @@
+<div class="d-flex justify-content-between">
+    <h3>Current participants:</h3>
+    {% if app.request.get('_route') != "create_participant" %}
+        <a href="{{ path("create_participant", {eventId: event.id}) }}">
+            <button class="btn btn-success">new</button>
+        </a>
+    {% endif %}
+</div>
+<ul class="list-group">
+    {% for participant in participantList %}
+        <li class="list-group-item d-flex justify-content-between">
+            {{ participant.user.email }}
+            <div class="btn-group">
+                <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Remove
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ path("delete_participant", {participantId: participant.id, eventId: event.id}) }}">Remove participant & remove payments</a></li>
+                </ul>
+            </div>
+        </li>
+    {% endfor %}
+</ul>
