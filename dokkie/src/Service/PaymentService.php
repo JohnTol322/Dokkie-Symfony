@@ -57,7 +57,7 @@ class PaymentService
             $amounts[$balance->getParticipant()->getUser()->getEmail()] = $balance->getBalance();
         }
         while(count(array_filter($amounts, function(float $balance){
-            return $balance !== 0.0;
+            return $balance >= 0.001 || $balance <= -0.001;
         })))
         {
             $highest = array_search(max($amounts),$amounts);
