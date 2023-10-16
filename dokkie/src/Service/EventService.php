@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Event;
+use App\Entity\Participant;
 use App\Entity\ParticipantBalance;
 use App\Repository\EventRepository;
 use App\Repository\ParticipantRepository;
@@ -33,7 +34,12 @@ class EventService
 
     public function getEvents(): array
     {
-        return $this->eventRepository->findBy(['user' => $this->security->getUser()]);
+        $userParticipants = $this->participantRepository->findBy(['user' => $this->security->getUser()]);
+        $events = [];
+        foreach ($userParticipants as $participant) {
+            $events[] = $participant->getEvent();
+        }
+        return $events;
     }
 
     public function getEvent(int $eventId): Event
