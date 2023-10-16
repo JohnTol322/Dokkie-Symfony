@@ -21,6 +21,9 @@
         {% include "payment/list_payments.html.twig" %}
     </div>
     <div class="card p-3 m-3">
+        {% include "event/event_balance.html.twig" %}
+    </div>
+    <div class="card p-3 m-3">
         <h3 style="color: #af0101;">Delete event</h3>
         <small style="color: #af0101;">Are you sure? Deleting an event will be permanent!</small>
         <a href="{{ path("delete_event", {id: event.id}) }}">
