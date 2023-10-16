@@ -55,17 +55,21 @@ class EventController extends AbstractController
         $event = null;
         $paymentList = [];
         $participantList= [];
+        $balanceList = [];
         try {
             $event = $this->eventService->getEvent($id);
             $paymentList = $this->paymentService->getPaymentsByEvent($id);
             $participantList = $this->participantService->getParticipantsByEvent($id);
+            $balanceList = $this->eventService->calculateParticipantBalance($id);
+            $this->paymentService->calculatePaymentPlan($balanceList);
         } catch (\Exception $e) {
             $this->addFlash("danger", $e->getMessage());
         } finally {
             return $this->render("event/show_event.html.twig", [
                 "event" => $event,
                 "paymentList" => $paymentList,
-                "participantList" => $participantList
+                "participantList" => $participantList,
+                "participantBalanceList" => $balanceList
             ]);
         }
     }
