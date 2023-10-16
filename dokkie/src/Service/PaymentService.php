@@ -3,11 +3,13 @@
 namespace App\Service;
 
 use App\Entity\Event;
+use App\Entity\ParticipantBalance;
 use App\Entity\Payment;
 use App\Repository\EventRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\PaymentRepository;
 use DateTime;
+use mysql_xdevapi\Result;
 
 class PaymentService
 {
@@ -44,5 +46,49 @@ class PaymentService
     {
         $event = $this->eventRepository->findOneBy(['id' => $eventId]);
         return $this->paymentRepository->findBy(['event' => $event]);
+    }
+
+    public function calculatePaymentPlan(array $participantBalance): array
+    {
+        $results = [];
+        $amounts = [];
+        /** @var ParticipantBalance $balance */
+        foreach ($participantBalance as $balance) {
+            $amounts[$balance->getParticipant()->getUser()->getEmail()] = $balance->getBalance();
+        }
+        while(count(array_filter($amounts, function(float $balance){
+            return $balance !== 0.0;
+        })))
+        {
+            $highest = array_search(max($amounts),$amounts);
+            $lowest = array_search(min($amounts),$amounts);
+
+            if (abs($amounts[$highest]) < abs($amounts[$lowest])) {
+                $amount = abs($amounts[$highest]);
+                $amount = number_format( $amount, 2, '.', '' );
+                $results[$highest][] = "{$highest} pays {$amount} EUR to {$lowest}";
+                $amounts[$lowest] = $amounts[$lowest] + $amounts[$highest];
+                $amounts[$highest] = 0;
+
+            } else {
+                $amount = abs($amounts[$lowest]);
+                $amount = number_format( $amount, 2, '.', '' );
+                $results[$highest][] = "{$highest} pays {$amount} EUR to {$lowest}";
+                $amounts[$highest] = $amounts[$highest] - abs($amounts[$lowest]);
+                $amounts[$lowest] = 0;
+            }
+        }
+
+        /** @var ParticipantBalance $balance */
+        foreach ($participantBalance as $balance) {
+            $email = $balance->getParticipant()->getUser()->getEmail();
+            if (array_key_exists($email, $results)) {
+                foreach ($results[$email] as $plan) {
+                    $balance->addPaymentPlan($plan);
+                }
+            }
+        }
+
+        return $participantBalance;
     }
 }
