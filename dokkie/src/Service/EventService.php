@@ -86,10 +86,10 @@ class EventService
         foreach ($participants as $participant) {
             $balance = new ParticipantBalance();
             foreach($participant->getPayments() as $payment) {
-                $balance->setParticipant($participant);
                 $balance->setTotal($balance->getTotal()+$payment->getAmount());
-                $balance->setBalance(($this->getTotalPaymentAmountByEvent($eventId) / count($participants)) - $balance->getTotal());
             }
+            $balance->setParticipant($participant);
+            $balance->setBalance(($this->getTotalPaymentAmountByEvent($eventId) / count($participants)) - $balance->getTotal());
             $participantBalances[] = $balance;
         }
 
